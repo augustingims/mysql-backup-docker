@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  adminer-db:
+    image: adminer
+    ports:
+      - 8089:8080
+  mysql-db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+  backup-db:
+    image: databack/mysql-backup
+    user: "0"
+    volumes:
+      - < Spécifier le chemin d'accès absolu >/db:/db
+    environment:
+      - DB_DUMP_TARGET=/db
+      - DB_USER=root
+      - DB_PASS=password
+      - DB_NAMES=database test
+      - DB_DUMP_BY_SCHEMA=true
+      - DB_DUMP_CRON=* * * * *
+      - DB_SERVER=mysql-db
+      - DB_PORT=3306
